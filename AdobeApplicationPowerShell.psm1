@@ -22,6 +22,7 @@ function Invoke-AdobeApplicationJSX {
         if (-not $JSXFilePath) {
             $JSXFilePath = [IO.Path]::GetTempFileName() -replace "\.tmp",".jsx" #InDesign errors if extension is not jsx
             $JSXFileContent | Out-File -FilePath $JSXFilePath
+            $JSXFileCreatedWithinFunction = $True
         }
 
         if ($AdobeApplicationName -eq "InDesign") {
@@ -33,6 +34,10 @@ function Invoke-AdobeApplicationJSX {
     end {
         if ($AdobeApplicationOpenedWithinFunction) {
             $AdobeApplicationCOMObject.Quit()
+        }
+
+        if ($JSXFileCreatedWithinFunction) {
+            Remove-Item -LiteralPath $JSXFilePath
         }
     }
 
