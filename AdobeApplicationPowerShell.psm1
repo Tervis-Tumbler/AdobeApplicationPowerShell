@@ -2,10 +2,7 @@ function Invoke-AdobeApplicationJSX {
     param (
         [ValidateSet("Illustrator","InDesign")][Parameter(Mandatory)]
         $AdobeApplicationName,
-        
-        [Parameter(Mandatory,ValueFromPipeline,ParameterSetName="JSXFilePath")]
-        $JSXFilePath,
-        
+
         [Parameter(Mandatory,ValueFromPipeline,ParameterSetName="JSXFileContent")]
         $JSXFileContent,
 
@@ -19,26 +16,16 @@ function Invoke-AdobeApplicationJSX {
         }
     }
     process {
-        # if (-not $JSXFilePath) {
-        #     $JSXFilePath = [IO.Path]::GetTempFileName() -replace "\.tmp",".jsx" #InDesign errors if extension is not jsx
-        #     $JSXFileContent | Out-File -FilePath $JSXFilePath
-        #     $JSXFileCreatedWithinFunction = $True
-        # }
-
         if ($AdobeApplicationName -eq "InDesign") {
-            # $AdobeApplicationCOMObject.DoScript($JSXFilePath, 1246973031)
             $AdobeApplicationCOMObject.DoScript($JSXFileContent, 1246973031)
         } elseif ($AdobeApplicationName -eq "Illustrator") {
-            $AdobeApplicationCOMObject.DoJavaScriptFile($JSXFilePath)
+            $AdobeApplicationCOMObject.DoScript($JSXFileContent, 1246973031)
+            # $AdobeApplicationCOMObject.DoJavaScriptFile($JSXFilePath)
         }
     }
     end {
         if ($AdobeApplicationOpenedWithinFunction) {
             $AdobeApplicationCOMObject.Quit()
-        }
-
-        if ($JSXFileCreatedWithinFunction) {
-            Remove-Item -LiteralPath $JSXFilePath
         }
     }
 }
