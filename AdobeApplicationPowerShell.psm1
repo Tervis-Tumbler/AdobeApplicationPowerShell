@@ -12,15 +12,16 @@ function Invoke-AdobeApplicationJSX {
         if (-not $AdobeApplicationCOMObject) {
             $AdobeApplicationCOMObject = New-Object -ComObject "$AdobeApplicationName.Application"
             $AdobeApplicationOpenedWithinFunction = $True
-            Start-Sleep -Seconds 1 #Might not be needed, InDesign will pop an alert over the splash screen and close without alert achnolweldgement
+            Start-Sleep -Seconds 1 #Might not be needed but without it InDesign will pop an alert over the splash screen and close without alert achnolweldgement
         }
     }
     process {
-        if ($AdobeApplicationName -eq "InDesign") {
-            $AdobeApplicationCOMObject.DoScript($JSXFileContent, 1246973031)
-        } elseif ($AdobeApplicationName -eq "Illustrator") {
-            $AdobeApplicationCOMObject.DoScript($JSXFileContent, 1246973031)
-            # $AdobeApplicationCOMObject.DoJavaScriptFile($JSXFilePath)
+        Lock-Object -InputObject $AdobeApplicationCOMObject -ScriptBlock {
+            if ($AdobeApplicationName -eq "InDesign") {
+                $AdobeApplicationCOMObject.DoScript($JSXFileContent, 1246973031)
+            } elseif ($AdobeApplicationName -eq "Illustrator") {
+                $AdobeApplicationCOMObject.DoScript($JSXFileContent, 1246973031)
+            }
         }
     }
     end {
