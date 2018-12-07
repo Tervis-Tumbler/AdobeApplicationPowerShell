@@ -18,4 +18,7 @@ alert("test");
 
 $ind = new-object -comobject InDesign.Application.CC.2018
 
+$AdobeApplicationName = "InDesign"
+$InterfaceToAdobeApplication = "Server"
 $BatchNumber = "20181115-1300"
+Set-CustomyzerModuleEnvironment -Name Production
